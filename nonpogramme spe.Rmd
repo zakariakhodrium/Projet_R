@@ -6,6 +6,11 @@ output: html_document
 ---
 
 ```{r}
+rotate90<-function(mat){
+  return (t(mat[,ncol(mat):1]))
+}
+
+
 nonogramecreate<-function(n,p)
 {
   y=0
@@ -147,7 +152,8 @@ ui <- fluidPage(
         wellPanel(
             sliderInput("gridSize", "Grid size", min = 5, max = 20, value = 5),
             sliderInput("p", "Probability", min = 0.1, max = 0.9, value = 0.5),
-            actionButton("update", "Create game", style = "background-color: red; color: white;")  # Add the update button with red background
+            actionButton("update", "Create game", style = "background-color: red; color: white;"),  # Add the update button with red background
+            actionButton("verify", "Verify", style = "background-color: green; color: white;")  # Add the solve button with green background
         
       )
     )
@@ -162,14 +168,28 @@ grid_state <- reactiveVal()
 indications <- reactiveVal()
 h_counter <- reactiveVal()
 v_counter <- reactiveVal()
+solution <- reactiveVal()
 
 observeEvent(input$update, {  # Listen for clicks on the update button
   grid_size(input$gridSize)  # Update grid size
   result <- nonogramecreate(grid_size(), input$p)
+  solution(result$X)  # Store the solution
+  print(solution)
   indications(list(horizontal = result$matindichori, vertical = result$matindicvert))  # Update indications
   h_counter(result$compteurH)  # Update horizontal counter
   v_counter(result$compteurV)  # Update vertical counter
   grid_state(matrix(0, nrow = grid_size(), ncol = grid_size()))  # Initialize grid_state with a blank grid
+})
+
+observeEvent(input$verify, {  # Listen for clicks on the verify button
+ print(rotate90(grid_state()))
+  #print(solution()== rotate90(grid_state()))
+  if(all(rotate90(grid_state())==solution())) {
+    showNotification("Congratulations! You have solved the game.", type = "message")
+  } else {
+    # If not all cells are filled, show a warning message
+    showNotification("The game is not yet solved. Keep trying!", type = "warning")
+  }
 })
 
   output$gridExists <- reactive({
@@ -272,3 +292,8 @@ nonograme_recreate <- function(matindichori, matindicvert) {
   return(X_recreated)
 }
 ```
+
+```{r}
+
+```
+
