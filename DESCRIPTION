@@ -1,0 +1,16 @@
+Package: PiccrossR
+Type: Package
+Title: Create and Solve Picross Puzzles
+Version: 0.1.0
+Authors@R: c(
+    person("KHODRI", "ZAKARIA", role = c("aut","cre"), email = "zakaria.khodri@etu.umontpellier.fr"),
+    person("BATALLER BELTRAN", "JULES", role = c("aut"), email = "jules.bataller-beltran@etu.umontpellier.fr>")
+  )
+Description: Create and solve Picross (nonogram) puzzles using this package. Includes functions for generating random puzzles, drawing the game grid, and verifying solutions.
+License: GPL-3
+Encoding: UTF-8
+LazyData: True
+URL: https://github.com/zakariakhodrium/Projet_R
+BugReports: https://github.com/zakariakhodrium/Projet_R/issues
+RoxygenNote: 7.3.1
+Imports: shiny
