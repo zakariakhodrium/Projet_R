@@ -50,6 +50,7 @@ nonogramecreate<-function(n,p)
     }
 
     matindichori[i,]=indicationh
+    matindichori[is.na(matindichori)] <- ""
     indicationh=c()
     
   }
@@ -83,6 +84,7 @@ nonogramecreate<-function(n,p)
     }
 
     matindicvert[,i]=indicationv
+    matindicvert[is.na(matindicvert)] <- ""
     indicationv=c()
     
   }
@@ -109,8 +111,6 @@ library(shiny)
 
 # Function to draw the grid
 draw_grid <- function(grid_state, gridSize, indications,h_counter,v_counter) {
-  # Define margins to accommodate the indications
-  par(mar = c(0, 10, 0, 0))
   
   plot(1:gridSize, 1:gridSize, type = "n", xlab = "", ylab = "", xaxt = 'n', yaxt = 'n', xlim = c(1, gridSize+1 ), ylim = c(1, gridSize+1 ))
   for(x in 1:gridSize) {
@@ -126,11 +126,17 @@ draw_grid <- function(grid_state, gridSize, indications,h_counter,v_counter) {
       }
     }
   }
+  # Define margins to accommodate the indications
+  par(mar = c(0, gridSize, 0, 0))
+    for (i in 1:gridSize) {
+  text(x = i, y = gridSize+0.5, paste(result$matindicvert[,i], collapse = " "), adj = c(1, 0.5), font = 2)
+  text(x = 1, y = i, paste(result$matindichori[i,], collapse = " "), adj = c(0.5, 1), font = 2)
+  }
 }
 
 ui <- fluidPage(
   titlePanel("Nonogram"),
-    tags$style(type="text/css", "#controls { width: 60%; margin: 0 auto; }"),
+  tags$style(type="text/css", "#controls { width: 60%; margin: 0 auto; }"),
   fluidRow(
     column(12,
       wellPanel(
@@ -148,17 +154,17 @@ ui <- fluidPage(
         )
       )
     ),
-      div(id = "controls",
+    div(id = "controls",
         wellPanel(
-            sliderInput("gridSize", "Grid size", min = 5, max = 20, value = 5),
-            sliderInput("p", "Probability", min = 0.1, max = 0.9, value = 0.5),
-            actionButton("update", "Create game", style = "background-color: red; color: white;"),  # Add the update button with red background
-            actionButton("verify", "Verify", style = "background-color: green; color: white;")  # Add the solve button with green background
-        
-      )
+          sliderInput("gridSize", "Grid size", min = 5, max = 20, value = 5),
+          sliderInput("p", "Probability", min = 0.1, max = 0.9, value = 0.5),
+          actionButton("update", "Create game", style = "background-color: red; color: white;"),  # Add the update button with red background
+          actionButton("verify", "Verify", style = "background-color: green; color: white;")  # Add the solve button with green background
+        )
     )
   )
 )
+
 
 # Server
 server <- function(input, output, session) {
@@ -174,8 +180,8 @@ observeEvent(input$update, {  # Listen for clicks on the update button
   grid_size(input$gridSize)  # Update grid size
   result <- nonogramecreate(grid_size(), input$p)
   solution(result$X)  # Store the solution
-  print(solution)
-  indications(list(horizontal = result$matindichori, vertical = result$matindicvert))  # Update indications
+  #print(solution)
+  indications(list(horizontal = result$matindichori))#, vertical = result$matindicvert))  # Update indications
   h_counter(result$compteurH)  # Update horizontal counter
   v_counter(result$compteurV)  # Update vertical counter
   grid_state(matrix(0, nrow = grid_size(), ncol = grid_size()))  # Initialize grid_state with a blank grid
@@ -295,8 +301,3 @@ nonograme_recreate <- function(matindichori, matindicvert) {
   return(X_recreated)
 }
 ```
-
-```{r}
-
-```
-
