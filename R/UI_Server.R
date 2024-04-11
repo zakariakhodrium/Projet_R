@@ -1,4 +1,3 @@
-library(shiny)
 ui <- fluidPage(
   titlePanel("Picross"),
   tags$style(type="text/css", "#controls { width: 60%; margin: 0 auto; }"),
@@ -106,7 +105,7 @@ server <- function(input, output, session) {
 #' 
 #' @details The Picross Shiny App allows users to play Picross puzzles interactively.
 #' 
-#' 
+#' @import shiny
 #' @export
 Piccross_R <- function(){
   shinyApp(ui = ui, server = server)
