@@ -45,15 +45,12 @@ server <- function(input, output, session) {
     grid_size(input$gridSize)  # Update grid size
     result <- nonogramecreate(grid_size(), input$diff)
     solution(result$X)  # Store the solution
-    #print(solution)
     indications(list(horizontal = result$matindichori, vertical = result$matindicvert))  # Update indications
     grid_state(matrix(0, nrow = grid_size(), ncol = grid_size()))  # Initialize grid_state with a blank grid
   })
 
   observeEvent(input$verify, {  # Listen for clicks on the verify button
     print(rotate90(grid_state()))
-    #print(solution()== rotate90(grid_state()))
-    #transform all cells that are 2 to 0
     test<-rotate90(grid_state())
     test[test == 2] <- 0
     if(all(test==solution())) {
